@@ -2,18 +2,23 @@ package me.ajinkyashinde.stplassignment.ui.customerlist
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import me.ajinkyashinde.stplassignment.R
+import me.ajinkyashinde.stplassignment.data.model.Customer
 import me.ajinkyashinde.stplassignment.databinding.ActivityCustomerListBinding
 import me.ajinkyashinde.stplassignment.utils.Helper.isInternetAvailable
 import me.ajinkyashinde.stplassignment.utils.Helper.showInternetNotFoundDialog
@@ -24,6 +29,7 @@ class CustomerListActivity : AppCompatActivity() {
 
     @Inject
     lateinit var adapter: CustomerListAdapter
+    private lateinit var data: PagingData<Customer>
 
     private lateinit var customerListViewModel: CustomerListViewModel
     private lateinit var binding : ActivityCustomerListBinding
@@ -34,6 +40,18 @@ class CustomerListActivity : AppCompatActivity() {
         setupViewModel()
         setupObserver()
         setupUI()
+
+        binding.searchView.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                s?.let {
+                    customerListViewModel.setQuery(s.toString())
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
     }
 
     private fun setupViewModel() {
@@ -69,9 +87,12 @@ class CustomerListActivity : AppCompatActivity() {
     private fun setupObserver() {
         lifecycleScope.launch {
             customerListViewModel.fetchCustomerDetails().collectLatest { pagingData ->
-                adapter.submitData(pagingData)
+                data = pagingData
+                adapter.submitData(data)
             }
         }
+
+
 
         adapter.addLoadStateListener { loadState ->
             if (loadState.refresh is LoadState.Loading) {

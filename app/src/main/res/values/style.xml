@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="queryBackground">@android:color/white</item> <!-- Background of search field -->
+        <item name="submitBackground">@android:color/white</item> <!-- Background of submit button -->
+<!--        <item name="android:background">@android:color/white</item> &lt;!&ndash; Background of SearchView &ndash;&gt;-->
+        <item name="android:textColor">@android:color/white</item> <!-- Text color -->
+        <item name="android:textColorHint">@android:color/white</item> <!-- Hint color -->
+    </style>
+</resources>
