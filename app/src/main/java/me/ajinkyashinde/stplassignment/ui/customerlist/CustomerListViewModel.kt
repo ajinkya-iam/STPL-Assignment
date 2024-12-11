@@ -28,7 +28,7 @@ class CustomerListViewModel @Inject constructor(private val stplRepository: STPL
         return queryFlow.flatMapLatest { query ->
             Pager(
                 config = PagingConfig(
-                    pageSize = 20,
+                    pageSize = 10,
                     enablePlaceholders = false
                 ),
                 pagingSourceFactory = {
